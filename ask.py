@@ -2,6 +2,7 @@ import dotenv
 import httpx
 import os
 from dotenv import load_dotenv
+import argparse
 
 load_dotenv()
 
@@ -14,6 +15,10 @@ else:
     print("api key loaded")
 
 
+parser=argparse.ArgumentParser(description="ask athe llm from your terminal")
+parser.add_argument("question",help="the question to ask the llm")
+args=parser.parse_args()
+print(args.question)
 url="https://api.groq.com/openai/v1/chat/completions"
 
 headers={
@@ -24,7 +29,7 @@ headers={
 payload={
     "model":"openai/gpt-oss-20b",
     "messages": [
-        {"role":"user","content":"explain recursion in one line"}],
+        {"role":"user","content":args.question}],
         "temperature":0.2
 }
 response=httpx.post(
@@ -35,4 +40,6 @@ response=httpx.post(
 )
 
 print("status ",response.status_code)
-print(response.json())
+data = response.json()
+answer = data["choices"][0]["message"]["content"]
+print(answer)
