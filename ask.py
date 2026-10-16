@@ -40,7 +40,18 @@ response=httpx.post(
     json=payload,
     timeout=30.0
 )
+if response.status_code == 401:
+    print("Error: Invalid API key. Check your .env file.")
+    raise SystemExit(1)
 
+elif response.status_code == 429:
+    print("Error: Rate limit reached. Please try again later.")
+    raise SystemExit(1)
+
+elif response.status_code != 200:
+    print(f"Error: API request failed with status {response.status_code}")
+    print(response.text)
+    raise SystemExit(1)
 print("status ",response.status_code)
 data = response.json()
 answer = data["choices"][0]["message"]["content"]
