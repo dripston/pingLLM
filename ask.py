@@ -34,12 +34,19 @@ payload={
         {"role":"user","content":args.question}],
         "temperature":args.temp
 }
-response=httpx.post(
-    url,
-    headers=headers,
-    json=payload,
-    timeout=30.0
-)
+try:
+    response=httpx.post(
+        url,
+        headers=headers,
+        json=payload,
+        timeout=30.0
+    )
+except httpx.TimeoutException:
+    print("httpx timed out.please try again")
+    raise SystemExit(1)
+except httpx.connectError:
+    print("coudlnt connect")
+    raise SystemExit(1)
 if response.status_code == 401:
     print("Error: Invalid API key. Check your .env file.")
     raise SystemExit(1)
