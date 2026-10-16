@@ -17,6 +17,7 @@ else:
 
 parser=argparse.ArgumentParser(description="ask athe llm from your terminal")
 parser.add_argument("question",help="the question to ask the llm")
+parser.add_argument("--temp",type=float,default=0.2,help="controls randomness in the llm response")
 args=parser.parse_args()
 print(args.question)
 url="https://api.groq.com/openai/v1/chat/completions"
@@ -30,7 +31,7 @@ payload={
     "model":"openai/gpt-oss-20b",
     "messages": [
         {"role":"user","content":args.question}],
-        "temperature":0.2
+        "temperature":args.temp
 }
 response=httpx.post(
     url,
